@@ -20,7 +20,7 @@ const Home: NextPage = () => {
 
   const user = useUser()
   console.log(data)
-  if (!data) return <div>Something went wrong...</div>
+  if (!data && !isLoading) return <div>Something went wrong...</div>
 
   type author = {
     id: string;
