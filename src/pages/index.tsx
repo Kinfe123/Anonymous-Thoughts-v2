@@ -11,9 +11,13 @@ const Home: NextPage = () => {
   // const {data} = api.example.getAll.useQuery()
   const { data, isLoading } = api.post.getAll.useQuery()
 
-
-
   const user = useUser()
+  if(!data) return <div>Something went wrong...</div>
+
+  
+
+
+
   console.log("The logged data is : ", data)
 
   return (

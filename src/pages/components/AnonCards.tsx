@@ -28,8 +28,8 @@ function AnonCards({post , author} : {post: Post , author: author}) {
             <div className="smoothie-card" onClick={handleClicks}>
                 <div className="wrapper-card">
                     <div className="unknown-wrapper">
-                        <Image src={author.profileImageUrl} className='unknown-png' alt={`${author.id} profile picture` } width={100} height={100} placeholder='blur
-                        '/>
+                        <Image src={author.profileImageUrl} className='unknown-png' alt={`${author.id} profile picture` } width={100} height={100}
+                        />
                         <p>@{author.username} </p>
                        
 
