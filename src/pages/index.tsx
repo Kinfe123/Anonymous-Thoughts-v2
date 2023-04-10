@@ -4,18 +4,61 @@ import Head from "next/head";
 import Link from "next/link";
 import { Audio } from 'react-loader-spinner'
 import { Helmet } from "react-helmet";
+import dayjs from 'dayjs'
+import Image from "next/image";
+import relativeTime from 'dayjs/plugin/relativeTime'
+import type { RouterOutputs } from "~/utils/api";
 import { api } from "~/utils/api";
-import AnonCards from "./components/AnonCards";
+
+dayjs.extend(relativeTime)
+
+
 
 const Home: NextPage = () => {
   // const {data} = api.example.getAll.useQuery()
   const { data, isLoading } = api.post.getAll.useQuery()
 
   const user = useUser()
-  if(!data) return <div>Something went wrong...</div>
+  console.log(data)
+  if (!data) return <div>Something went wrong...</div>
 
-  
+  type author = {
+    id: string;
+    username: string | null;
+    profileImageUrl: string;
+  }
+  const handleClicks = () => {
+    return 
+  }
+  type anonCards = RouterOutputs['post']['getAll'][number]
+  const AnonCards = (props: anonCards) => {
 
+    console.log("The props: " , props)
+    const {post , author} = props
+    return (
+
+
+      <div>
+
+         <div className="smoothie-card" onClick={handleClicks}>
+          <div className="wrapper-card">
+            <div className="unknown-wrapper">
+              <Image src = {author.profileImageUrl} width={40} height={40} alt={`${author.id}`}/>
+              <p>@{author.username} </p>
+
+
+            </div>
+            <h3>{post.content}</h3>
+            <p className="disc">{post.content}</p>
+            <p className="disc">{dayjs(post.createdAt).fromNow()}</p>
+          </div>
+
+        </div> 
+      </div>
+
+    )
+
+  }
 
 
   console.log("The logged data is : ", data)
