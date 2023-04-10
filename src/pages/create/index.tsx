@@ -34,9 +34,9 @@ function Create() {
   const handleSubmit = () => {
     createAnon({
       content: body,
-      author: user.user?.username as string,
-      imgUrl: user.user?.profileImageUrl as string,
-      authorId: user.user?.id  as string,
+      author: user.user?.username ?? "",
+      imgUrl: user.user?.profileImageUrl ?? "",
+      authorId: user.user?.id  ?? "",
     })
 
 

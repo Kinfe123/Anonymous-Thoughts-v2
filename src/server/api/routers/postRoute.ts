@@ -1,7 +1,7 @@
 import type { User } from "@clerk/nextjs/dist/api";
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { string, z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -18,7 +18,7 @@ export const postRouter = createTRPCRouter({
       }
     )
     const users = (await clerkClient.users.getUserList({
-      userId: posts.map((post) => post.authorId as string),
+      userId: posts.map((post) => post.authorId ),
       limit: 100,
     })).map(filteredUser)
     return posts.map((post) => {
