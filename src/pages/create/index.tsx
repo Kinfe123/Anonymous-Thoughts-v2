@@ -1,26 +1,35 @@
+'use-client'
+
 import React from 'react'
 import Head from "next/head";
 import Link from "next/link";
 import { Audio } from 'react-loader-spinner'
 import { Helmet } from "react-helmet";
 import { useState } from 'react';
+import {useNavigate} from 'react-router-dom'
 import { api } from "~/utils/api";
 import { SignInButton, useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/router';
 
 function Create() {
 
 
   const user = useUser()
-  
+ const router = useRouter()
+
+
+  console.log(user)
 
   const {data: fetchedData , refetch:fetchedReferesh } = api.post.getAll.useQuery()
 
-  const {mutate: createAnon , isLoading } = api.post.create.useMutation(
+  const {mutate: createAnon , isLoading , data } = api.post.create.useMutation(
     {
       onSuccess: () => {
-        void fetchedReferesh()
+         void router.push('/')
+         void fetchedReferesh()
 
       }
+      
     }
   );
 
@@ -31,20 +40,21 @@ function Create() {
 
 
   // const {data , }
-  const handleSubmit = () => {
-    createAnon({
-      content: body,
-      author: user.user?.username ?? "",
-      imgUrl: user.user?.profileImageUrl ?? "",
-      authorId: user.user?.id  ?? "",
-    })
-
+  const handleSubmit = (e) => {  
+    e.preventDefault(); 
+    createAnon({content: body ,   author: user.user?.username , imgUrl: user.user?.profileImageUrl})
 
     
-    return
+    
 
 
   }
+  if(!isLoading && data) {
+    console.log('should be routed here  ')
+  }
+  
+
+  
   return (
     <>
       {user ? (
@@ -59,6 +69,8 @@ function Create() {
                 </Helmet>
 
                 <form onSubmit={handleSubmit}>
+
+                  
                 
 
                   <label htmlFor="method">Tell Them What You Got:</label>

@@ -1,7 +1,7 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import type { AppType } from 'next/app'
 
-
+import { BrowserRouter  , Router , Ro } from 'react-router-dom';
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";

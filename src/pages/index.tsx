@@ -1,10 +1,11 @@
-import { SignIn, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
+import { SignIn, SignInButton, SignOutButton, useUser , UserButton} from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { Audio } from 'react-loader-spinner'
 import { Helmet } from "react-helmet";
 import dayjs from 'dayjs'
+import { useState } from "react";
 import Image from "next/image";
 import relativeTime from 'dayjs/plugin/relativeTime'
 import type { RouterOutputs } from "~/utils/api";
@@ -14,12 +15,28 @@ dayjs.extend(relativeTime)
 
 
 
+
+
+
+
 const Home: NextPage = () => {
   // const {data} = api.example.getAll.useQuery()
+
+ 
+  const user = useUser()
+
   const { data, isLoading } = api.post.getAll.useQuery()
 
-  const user = useUser()
-  console.log(data)
+  const { mutate } = api.post.create.useMutation()
+  // const handleAction = () => {
+  //   mutate({content: "Hello wWorld"  , author: user.user?.username , imgUrl: user.user?.profileImageUrl})
+   
+  // }
+  
+
+  
+
+
   if (!data && !isLoading) return <div>Something went wrong...</div>
 
   type author = {
@@ -43,7 +60,7 @@ const Home: NextPage = () => {
          <div className="smoothie-card" onClick={handleClicks}>
           <div className="wrapper-card">
             <div className="unknown-wrapper">
-              <Image src = {author.profileImageUrl} width={40} height={40} alt={`${author.id}`}/>
+              <Image src = {author.profileImageUrl} className="unknown-png"  width={40} height={40} alt={`${author.id}`}/>
               <p>@{author.username} </p>
 
 
@@ -60,8 +77,6 @@ const Home: NextPage = () => {
 
   }
 
-
-  console.log("The logged data is : ", data)
 
   return (
     <>
@@ -87,10 +102,11 @@ const Home: NextPage = () => {
 
               <Link className="homes-create" href="/">Home</Link>
               <Link href="/create" className="create-tot">Create Thoughts</Link>
+            
             </div>
             <div className="">
               {!user.isSignedIn && <div className="create-tot"><SignInButton /></div>}
-              {!!user.isSignedIn && <div className="create-tot"><SignOutButton /></div>}
+              {!!user.isSignedIn && <div className="create-tot"><UserButton /></div>}
 
             </div>
             {/* <Link to="/about" className="create-tot">About Anon</Link> */}
