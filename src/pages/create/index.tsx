@@ -3,6 +3,7 @@
 import React from 'react'
 import Head from "next/head";
 import Link from "next/link";
+import {toast} from 'react-hot-toast'
 import { Audio } from 'react-loader-spinner'
 import { Helmet } from "react-helmet";
 import { useState } from 'react';
@@ -28,9 +29,14 @@ function Create() {
          void router.push('/')
          void fetchedReferesh()
 
+      },
+      onError: () => {
+        toast.error('Failed posting the thought!')
       }
       
+    
     }
+    
   );
 
   const [title, setTitle] = useState('')

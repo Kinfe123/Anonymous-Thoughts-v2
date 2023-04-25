@@ -6,6 +6,7 @@ import { Audio } from 'react-loader-spinner'
 import { Helmet } from "react-helmet";
 import dayjs from 'dayjs'
 import { useState } from "react";
+import {toast} from 'react-hot-toast'
 import Image from "next/image";
 import relativeTime from 'dayjs/plugin/relativeTime'
 import type { RouterOutputs } from "~/utils/api";
@@ -47,7 +48,12 @@ const Home: NextPage = () => {
   
 
 
-  if (!data && !isLoading) return <div>Something went wrong...</div>
+  if (!data && !isLoading) {
+    toast.error('Something went wrong')
+    return <div>
+      Something went wrong
+    </div>
+  }
 
   type author = {
     id: string;
@@ -66,16 +72,16 @@ const Home: NextPage = () => {
 
 
       <div>
-
+        
          <div className="smoothie-card" onClick={handleClicks}>
           <div className="wrapper-card">
             <div className="unknown-wrapper">
               <Image src = {props?.author.profileImageUrl as string} className="unknown-png"  width={40} height={40} alt={`${props?.author.id as string}`}/>
-              <p>@{props?.author.username} </p>
+              <Link href={`@${props?.author.username as string}`}><p>@{props?.author.username} </p></Link>
 
 
             </div>
-            <h3>{props?.post.content}</h3>
+            <Link href={`posts/${props?.post.id as string} `}><h3>{props?.post.content}</h3></Link>
             <p className="disc">{props?.post.content}</p>
             <p className="disc">{dayjs(props?.post.createdAt).fromNow()}</p>
           </div>
