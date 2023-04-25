@@ -40,9 +40,9 @@ function Create() {
 
 
   // const {data , }
-  const handleSubmit = (e) => {  
+  const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {  
     e.preventDefault(); 
-    createAnon({content: body ,   author: user.user?.username , imgUrl: user.user?.profileImageUrl})
+    createAnon({content: body ,   author: user.user?.username as string , imgUrl: user.user?.profileImageUrl as string})
 
     
     

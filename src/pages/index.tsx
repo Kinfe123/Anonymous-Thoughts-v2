@@ -10,6 +10,7 @@ import Image from "next/image";
 import relativeTime from 'dayjs/plugin/relativeTime'
 import type { RouterOutputs } from "~/utils/api";
 import { api } from "~/utils/api";
+import { Post } from "@prisma/client";
 
 dayjs.extend(relativeTime)
 
@@ -22,12 +23,21 @@ dayjs.extend(relativeTime)
 const Home: NextPage = () => {
   // const {data} = api.example.getAll.useQuery()
 
- 
+  type Authors = {
+    username: string;
+    id: string;
+    profileImageUrl: string;
+  }
   const user = useUser()
 
   const { data, isLoading } = api.post.getAll.useQuery()
 
   const { mutate } = api.post.create.useMutation()
+
+  const {data:IdData } = api.post.getPostById.useQuery({
+    id: 'clgakotbv0000jvbkmt4vxu85'
+  })
+  console.log(IdData)
   // const handleAction = () => {
   //   mutate({content: "Hello wWorld"  , author: user.user?.username , imgUrl: user.user?.profileImageUrl})
    
@@ -50,8 +60,8 @@ const Home: NextPage = () => {
   type anonCards = RouterOutputs['post']['getAll'][number]
   const AnonCards = (props: anonCards) => {
 
-    console.log("The props: " , props)
-    const {post , author} = props
+
+  
     return (
 
 
@@ -60,14 +70,14 @@ const Home: NextPage = () => {
          <div className="smoothie-card" onClick={handleClicks}>
           <div className="wrapper-card">
             <div className="unknown-wrapper">
-              <Image src = {author.profileImageUrl} className="unknown-png"  width={40} height={40} alt={`${author.id}`}/>
-              <p>@{author.username} </p>
+              <Image src = {props?.author.profileImageUrl as string} className="unknown-png"  width={40} height={40} alt={`${props?.author.id as string}`}/>
+              <p>@{props?.author.username} </p>
 
 
             </div>
-            <h3>{post.content}</h3>
-            <p className="disc">{post.content}</p>
-            <p className="disc">{dayjs(post.createdAt).fromNow()}</p>
+            <h3>{props?.post.content}</h3>
+            <p className="disc">{props?.post.content}</p>
+            <p className="disc">{dayjs(props?.post.createdAt).fromNow()}</p>
           </div>
 
         </div> 
@@ -153,7 +163,7 @@ const Home: NextPage = () => {
           {data && data.map(anon => (
             // console.log(anon)
 
-            <AnonCards key={anon.post.id} post={anon.post} author={anon.author} />
+            <AnonCards key={anon?.post.id} post={anon?.post as Post} author={anon?.author as Authors} />
 
           ))}
         </div>

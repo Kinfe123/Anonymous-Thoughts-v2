@@ -4,12 +4,22 @@ import { TRPCError } from "@trpc/server";
 import { string, z } from "zod";
 import { useUser } from "@clerk/nextjs";
 
+import { Ratelimit } from "@upstash/ratelimit"; // for deno: see above
+import { Redis } from "@upstash/redis";
 
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
 const filteredUser = (user: User) => {
   return { id: user.id, username: user.username, profileImageUrl: user.profileImageUrl }
 }
+
+// Create a new ratelimiter, that allows 10 requests per 10 seconds
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, "10 s"),
+  analytics: true,
+
+})
 
 export const postRouter = createTRPCRouter({
   
@@ -60,6 +70,27 @@ export const postRouter = createTRPCRouter({
 
 
   }),
+
+  getPostById: publicProcedure
+  .input(z.object({ id: z.string() }))
+  .query(async ({ ctx, input }) => {
+    const post = await ctx.prisma.post.findUnique({
+      where: { id: input.id },
+    });
+
+    if (!post)
+      throw new TRPCError({ code: "NOT_FOUND", message: "Post not found" });
+
+    const user = await clerkClient.users
+      .getUser(post!.authorId)
+      .then(filteredUser);
+
+ 
+    if (!user)
+      throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+
+    return { ...post, user };
+  }),
   create: privateProcedure.input(z.object({
     content: z.string(), 
     author:z.string(),
@@ -74,7 +105,7 @@ export const postRouter = createTRPCRouter({
   
     const post = await ctx.prisma.post.create({
       data: {
-        authorId: authorId,
+        authorId: authorId as string,
         author:input.author,
         imgUrl:input.imgUrl,
         content:input.content,
